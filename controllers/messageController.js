@@ -1,7 +1,7 @@
 import User from "../models/User.js";
 import Message from "../models/Message.js";
 import { genCode } from "../generate/genPass.js";
-import { Socket } from "../utils/socketServer.js";
+import { pusher } from "../utils/pusherServer.js";
 import Notify from "../models/Notify.js";
 
 export const AddChatRoom = async (request,response) => {
@@ -114,15 +114,15 @@ export const PushChat = async (request,response) => {
         }
         let notif = await Notify.insertMany(data);
         if (notif) {
-            Socket.emit("pushChat", result)
-            Socket.emit("pushNotif",notif)
+            pusher.trigger("voteChat","pushChat", {result})
+            pusher.trigger("voteNotif","pushNotif",{notif})
             response.json({
                 code: 200,
                 status: "OK",
                 data: result
             })
         }else {
-            Socket.emit("pushChat", result)
+            pusher.trigger("voteChat","pushChat", {result})
             response.json({
                 code: 200,
                 status: "OK",

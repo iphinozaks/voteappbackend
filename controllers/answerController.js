@@ -2,7 +2,7 @@ import Answer from "../models/Answer.js";
 import Notify from "../models/Notify.js";
 import Comment from "../models/Comment.js";
 import Question from "../models/Question.js";
-import { Socket } from "../utils/socketServer.js";
+import {pusher} from "../utils/pusherServer.js";
 
 export const GetAnsByParams = async (request,response) => {
     let data1 = await Answer.find({quest_id: request.body.params})
@@ -50,7 +50,7 @@ export const AddAnswer = async (request,response) => {
         Answer.insertMany(data)
         .then(async (result) => {
             if (result) {  
-                Socket.emit("pushAnswer", result) 
+                pusher.trigger("voteAnswer","pushAnswer", {result})
                 const quest = await Question.find({_id: request.body.req.quest_id},{answers: {$elemMatch: {ans_id: request.body.req.ans_id}}}) 
                 const update = await Question.updateMany({answers: {$elemMatch: {ans_id: quest[0].answers[0].ans_id}}},{$set: {"answers.$[filt].ans_count": quest[0].answers[0].ans_count + 1}},{arrayFilters: [{"filt.ans_id": quest[0].answers[0].ans_id}]})
                 if (update.modifiedCount > 0) {
@@ -77,7 +77,7 @@ export const AddAnswer = async (request,response) => {
                             }
                             let notif = await Notify.insertMany(data)
                             if (notif) {
-                                Socket.emit("pushNotif",notif); 
+                                pusher.trigger("voteNotif","pushNotif",{notif}) 
                                 response.json({
                                     code: 200,
                                     status: "OK"
@@ -117,7 +117,7 @@ export const AddAnswer = async (request,response) => {
                         }
                         let notif = await Notify.insertMany(data)
                         if (notif) {
-                            Socket.emit("pushNotif",notif);     
+                            pusher.trigger("voteNotif","pushNotif",{notif})     
                             response.json({
                                 code: 200,
                                 status: "OK" 
