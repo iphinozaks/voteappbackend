@@ -2,10 +2,6 @@ import User from "../models/User.js";
 import { genPass,verifyPass,genToken } from "../generate/genPass.js";
 
 export const Login = async (request,response) => {
-    response.json({
-        "request": request.body
-    })
-    return;
     let user = await User.findOne({$or: [{email: request.body.name},{username: request.body.name}]})
     if (user) {
         if (verifyPass(user.password,request.body.password)) {
