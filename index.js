@@ -13,7 +13,7 @@ const port  = process.env.PORT || 8000;
 const app = express();
 
 app.use(cors({
-    origin: ["https://voteappbackendapi.cyclic.app/"], 
+    origin: ["https://voterapp-c6459.web.app/"], 
     method: ["GET","POST"]
 }))
 
