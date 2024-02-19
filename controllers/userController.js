@@ -3,7 +3,7 @@ import { genPass,verifyPass,genToken } from "../generate/genPass.js";
 
 export const Login = async (request,response) => {
     response.json({
-        "user": "ada"
+        user: "ada"
     })
     return; 
     let user = await User.findOne({$or: [{email: request.body.name},{username: request.body.name}]})
