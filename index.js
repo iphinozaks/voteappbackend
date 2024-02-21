@@ -13,7 +13,7 @@ const port  = process.env.PORT || 8000;
 const app = express();
 
 app.use(cors({
-    origin: ["https://voterapp-c6459.web.app/","http://localhost:3000/"], 
+    origin: ["https://voterapp-c6459.web.app","http://localhost:3000"], 
     method: ["GET","POST"]
 }))
 
